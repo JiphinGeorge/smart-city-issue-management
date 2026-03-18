@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Smart City Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="script.js"></script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+    <div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            
+            <header class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-4 sticky top-0 z-50">
+                <div class="flex items-center gap-3">
+                    <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                        <span class="material-symbols-outlined">location_city</span>
+                    </div>
+                    <h2 class="text-xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white">Smart City Dashboard</h2>
+                </div>
+                
+                <div class="flex flex-1 justify-end gap-6 items-center">
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="/" class="text-primary text-sm font-semibold border-b-2 border-primary pb-1">Dashboard</a>
+                        <a href="/admin" class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors text-sm font-medium">Admin Panel</a>
+                        <a href="/analytics" class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors text-sm font-medium">Analytics</a>
+                    </nav>
+
+                    <label class="hidden lg:flex flex-col min-w-64">
+                        <div class="flex w-full items-stretch rounded-xl h-10 border border-slate-200 dark:border-slate-700 overflow-hidden">
+                            <div class="text-slate-400 flex items-center justify-center pl-3 bg-white dark:bg-slate-800">
+                                <span class="material-symbols-outlined text-[20px]">search</span>
+                            </div>
+                            <input class="form-input flex w-full border-none bg-white dark:bg-slate-800 focus:ring-0 text-sm font-normal placeholder:text-slate-400" placeholder="Search issues..." value=""/>
+                        </div>
+                    </label>
+                    <div class="flex gap-2">
+                        <button class="flex items-center justify-center rounded-xl h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition-colors">
+                            <span class="material-symbols-outlined">notifications</span>
+                        </button>
+                        <div class="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-primary/20 overflow-hidden" data-alt="User avatar profile picture">
+                            <img alt="Profile" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2HbBguHdX8uK2joF5Fdo6XvuzOZzbbCn9vjyJQs64d7rYm8ghM0JJQ98Avm_-7AAqtL3njZZ4i8LuLDcMXWLU2BNfxXpXOUYkh3iwSgvmuPzcFV6k05rUrm1gl1qkenL4Ri1ngDLmse_QMwnoHe6ReqWn1UYr3WewB_DF5wLIpXR3_QLwtqsp9_FHQNQPP9yn91SEgSss4y7mYREyU6Qza6b7vy8k6sDL5hRb5ZWe4UliNic_FRmYfcr0IFDYlbZp5KJQtLpWGYa3"/>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="flex-1 max-w-7xl mx-auto w-full px-6 py-8 flex flex-col gap-8">
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800">
+                        <div class="flex items-center justify-between">
+                            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Issues</p>
+                            <span class="material-symbols-outlined text-primary">assessment</span>
+                        </div>
+                        <div class="flex items-baseline gap-2 mt-2">
+                            <p id="stat-total" class="text-3xl font-bold text-slate-900 dark:text-white">0</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800">
+                        <div class="flex items-center justify-between">
+                            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Pending Issues</p>
+                            <span class="material-symbols-outlined text-amber-500">pending_actions</span>
+                        </div>
+                        <div class="flex items-baseline gap-2 mt-2">
+                            <p id="stat-pending" class="text-3xl font-bold text-slate-900 dark:text-white">0</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800">
+                        <div class="flex items-center justify-between">
+                            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Resolved Issues</p>
+                            <span class="material-symbols-outlined text-emerald-500">check_circle</span>
+                        </div>
+                        <div class="flex items-baseline gap-2 mt-2">
+                            <p id="stat-resolved" class="text-3xl font-bold text-slate-900 dark:text-white">0</p>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 flex flex-col gap-6">
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+                                <button class="px-4 py-2 rounded-lg bg-white dark:bg-slate-900 shadow-sm text-sm font-semibold text-slate-900 dark:text-white">All Issues</button>
+                                <button class="px-4 py-2 rounded-lg text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700">Pending</button>
+                                <button class="px-4 py-2 rounded-lg text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700">Resolved</button>
+                            </div>
+                            <button id="btn-new-issue" class="flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-bold text-sm rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+                                <span class="material-symbols-outlined text-[20px]">add_circle</span> Report New Issue
+                            </button>
+                        </div>
+                        
+                        <div id="dashboard-issues-list" class="grid grid-cols-1 gap-4">
+                            <div class="p-8 text-center text-slate-500">Loading issues from server...</div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-6">
+                        <div class="bg-primary/5 dark:bg-primary/10 border border-primary/20 p-6 rounded-xl flex flex-col gap-5">
+                            <div class="flex items-center gap-3">
+                                <div class="size-10 bg-primary rounded-lg flex items-center justify-center text-white">
+                                    <span class="material-symbols-outlined">psychology</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-slate-900 dark:text-white">AI Suggestion System</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">Report issues using natural language</p>
+                                </div>
+                            </div>
+                            <form class="flex flex-col gap-4">
+                                <div class="flex flex-col gap-2">
+                                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Describe the issue</label>
+                                    <textarea id="ai-input" class="form-textarea w-full rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:ring-primary text-sm min-h-[100px]" placeholder="E.g. I see some water leakage near the library entrance..."></textarea>
+                                </div>
+                                
+                                <div class="flex flex-col gap-2">
+                                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Attach Photo (Optional)</label>
+                                    <input type="file" id="ai-image-upload" accept="image/*" class="text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 transition-all cursor-pointer w-full">
+                                    <div id="ai-image-preview-container" class="hidden mt-2">
+                                        <img id="ai-image-preview" src="" alt="Preview" class="w-full h-32 object-cover rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                                    </div>
+                                </div>
+
+                                <button id="btn-ai-analyze" class="w-full py-3 bg-primary text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2" type="button">
+                                    <span class="material-symbols-outlined text-[20px]">magic_button</span> Analyze & Categorize
+                                </button>
+                                <div class="p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg border border-dashed border-slate-300 dark:border-slate-600">
+                                    <p class="text-[11px] text-slate-500 italic text-center">AI will automatically detect priority and category based on your description.</p>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+                            <div class="p-4 border-b border-slate-200 dark:border-slate-800">
+                                <h3 class="font-bold text-slate-900 dark:text-white">City Heatmap</h3>
+                            </div>
+                            <div class="h-48 w-full bg-slate-200 relative group" data-location="Chicago">
+                                <img class="w-full h-full object-cover grayscale opacity-60" data-alt="Abstract city map visualization with hot spots" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWVsxe9STDyqk9bLKrROh3vdTQp9DYj-U2xlepa2JhZT5YBdZo2ZCSBHrLH32YoJhYINvdR-GXqcnHHng4wRfC3DZvxg_O6q2xMSIPgas8kESYGw9oSR3OmguO88YdWbJQW-JYHURXXJDzoYXeOohdZQeUF1Oy_QS4zk1h4njv0-Q1N5r93N0eUa5kPYxCbZiVHzJJbARH9TqgXajThsDmV-dKShMdhJnjN6-XlxSp1iGt4raDye36vzVQqYZ_s40Q1vmSRV30uedk"/>
+                                <div class="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="p-2 bg-white/90 dark:bg-slate-900/90 rounded-lg shadow-xl flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-primary text-[20px]">location_on</span>
+                                        <span class="text-xs font-bold">48 Active Reports</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <button class="w-full py-2 text-primary font-semibold text-sm hover:underline">Open Full Map View</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>
