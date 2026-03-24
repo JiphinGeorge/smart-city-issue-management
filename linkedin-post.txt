@@ -1,0 +1,26 @@
+🚀 Excited to share that our team secured 2nd Prize 🥈 at the Vibe Coding Event conducted as part of TecXell 2026 at MGM Institute of Technology, Kochi!
+
+Along with my teammate Umesh, we built a project titled "Smart City Issue Management System" — a full-stack web application designed to help citizens report, track, and manage urban issues efficiently.
+
+🔧 What we built:
+
+✅ AI-Powered Issue Reporting — Citizens describe issues in plain language, and the system automatically detects the category (Road, Utilities, Waste, Electric) and priority level
+✅ Real-Time Dashboard — Live stats, status filters, and full-text search across all reported issues
+✅ Admin Panel — A dedicated management view with tabular data, inline actions, and resolution tracking
+✅ Analytics Page — Dynamic category distribution and priority breakdown charts
+✅ Image Upload & Location Tagging — Attach photo evidence and geolocation data to every report
+✅ Role-Based Authentication — Separate flows for Admin and Citizen users
+
+🛠️ Tech Stack: Node.js | Express.js | TailwindCSS | Vanilla JavaScript | JSON-based data layer
+
+The event challenged students to build innovative, real-world solutions using modern development approaches and AI-driven workflows — all within a tight time constraint. It was an incredible hands-on experience that pushed us to think fast, build smarter, and collaborate effectively.
+
+Truly captured the spirit of hackathons — rapid ideation, clean execution, and delivering a working product under pressure 💪
+
+A big thank you to the organizers and volunteers at MGM Institute of Technology for hosting such an amazing event 👏
+
+🔗 Check out the project: https://github.com/JiphinGeorge/smart-city-issue-management
+
+Looking forward to building more impactful solutions!
+
+#TecXell2026 #VibeCoding #Hackathon #SmartCity #FullStackDevelopment #AI #Innovation #WebDevelopment #NodeJS #JavaScript #HackathonWinner #BuildInPublic
