@@ -393,8 +393,8 @@ function setupInteractivity() {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault(); // Stop page reload
 
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
             const errorBox = document.getElementById('login-error');
             const submitBtn = document.getElementById('btn-login-submit');
 
@@ -428,6 +428,49 @@ function setupInteractivity() {
                 errorBox.textContent = "Server connection error.";
                 errorBox.classList.remove('hidden');
                 submitBtn.innerHTML = `Sign In <span class="material-symbols-outlined text-[18px]">arrow_forward</span>`;
+            }
+        });
+    }
+
+    // --- REGISTER PAGE LOGIC ---
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+
+            const name = document.getElementById('full_name').value;
+            const email = document.getElementById('email').value;
+            const ward = document.getElementById('ward').value;
+            const password = document.getElementById('password').value;
+            
+            const errorBox = document.getElementById('register-error');
+            const submitBtn = document.getElementById('btn-register-submit');
+
+            // UI Loading state
+            submitBtn.innerHTML = `<span class="material-symbols-outlined animate-spin text-[18px]">sync</span> Creating...`;
+            errorBox.classList.add('hidden');
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, ward, password })
+                });
+                
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    localStorage.setItem('cityfix_role', data.role);
+                    window.location.href = data.redirectUrl;
+                } else {
+                    errorBox.textContent = data.error || "Registration failed.";
+                    errorBox.classList.remove('hidden');
+                    submitBtn.textContent = "Create Account";
+                }
+            } catch (err) {
+                errorBox.textContent = "Server connection error.";
+                errorBox.classList.remove('hidden');
+                submitBtn.textContent = "Create Account";
             }
         });
     }

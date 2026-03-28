@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 3000;
 const clientPath = path.join(__dirname, '../client');
 const dataPath = path.join(__dirname, '../data');
 const issuesFilePath = path.join(dataPath, 'issues.json');
+const usersFilePath = path.join(dataPath, 'users.json');
 
 app.use(express.json());
 app.use(express.static(clientPath));
@@ -26,31 +27,51 @@ app.get('/register', (req, res) => res.sendFile(path.join(clientPath, 'register.
 const readData = () => JSON.parse(fs.readFileSync(issuesFilePath, 'utf8'));
 const writeData = (data) => fs.writeFileSync(issuesFilePath, JSON.stringify(data, null, 2));
 
+const readUsers = () => JSON.parse(fs.readFileSync(usersFilePath, 'utf8'));
+const writeUsers = (data) => fs.writeFileSync(usersFilePath, JSON.stringify(data, null, 2));
+
 // --- API Routes ---
 // POST: Login Authentication
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
-
-    // Hardcoded dummy credentials for the prototype
-    if (email === 'admin@cityfix.com' && password === 'admin123') {
-        // Admin goes to /admin
-        return res.json({ success: true, role: 'admin', redirectUrl: '/admin' });
-    } 
-    else if (email === 'user@cityfix.com' && password === 'user123') {
-        // User goes to Dashboard (/)
-        return res.json({ success: true, role: 'user', redirectUrl: '/' });
-    } 
-    else {
-        // By default on login API if it's not the hardcoded, let's just let them in as user
-        // This is a simple prototype flow
-        return res.json({ success: true, role: 'user', redirectUrl: '/' });
+    
+    try {
+        const data = readUsers();
+        const user = data.users.find(u => u.email === email && u.password === password);
+        
+        if (user) {
+            const redirectUrl = user.role === 'admin' ? '/admin' : '/';
+            return res.json({ success: true, role: user.role, name: user.name, redirectUrl });
+        } else {
+            return res.status(401).json({ success: false, error: 'Invalid email or password' });
+        }
+    } catch(err) {
+        return res.status(500).json({ success: false, error: 'Internal server error' });
     }
 });
 
 // POST: Registration
 app.post('/api/register', (req, res) => {
-    // Simply accept any registration for the prototype and return success
-    return res.json({ success: true, role: 'user', redirectUrl: '/' });
+    const { name, email, password, ward } = req.body;
+    
+    if (!name || !email || !password) {
+        return res.status(400).json({ success: false, error: 'Missing required fields' });
+    }
+    
+    try {
+        const data = readUsers();
+        if (data.users.some(u => u.email === email)) {
+            return res.status(409).json({ success: false, error: 'Email already in use' });
+        }
+        
+        const newUser = { email, password, name, ward, role: 'user' };
+        data.users.push(newUser);
+        writeUsers(data);
+        
+        return res.json({ success: true, role: 'user', redirectUrl: '/' });
+    } catch(err) {
+        return res.status(500).json({ success: false, error: 'Failed to create account' });
+    }
 });
 // GET: Fetch all issues
 app.get('/api/issues', (req, res) => {
