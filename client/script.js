@@ -414,7 +414,7 @@ function setupInteractivity() {
 
                 if (res.ok && data.success) {
                     // Save role in local storage (optional, useful for hiding UI elements later)
-                    localStorage.setItem('cityfix_role', data.role);
+                    localStorage.setItem('cityops_role', data.role);
                     
                     // Redirect the user to the URL the server told us to use!
                     window.location.href = data.redirectUrl;
@@ -460,7 +460,7 @@ function setupInteractivity() {
                 const data = await res.json();
 
                 if (res.ok && data.success) {
-                    localStorage.setItem('cityfix_role', data.role);
+                    localStorage.setItem('cityops_role', data.role);
                     window.location.href = data.redirectUrl;
                 } else {
                     errorBox.textContent = data.error || "Registration failed.";

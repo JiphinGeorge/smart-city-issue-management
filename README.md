@@ -1,4 +1,4 @@
-# 🏙️ Smart City Issue Management System
+# 🏙️ CityOps Issue Management System
 
 > A web-based platform for citizens to report, track, and manage urban issues efficiently — built with AI-powered categorization and a modern dashboard UI.
 
@@ -103,8 +103,8 @@ The app will be running at **http://localhost:3000**
 
 | Role  | Email                | Password  |
 |-------|----------------------|-----------|
-| Admin | admin@cityfix.com    | admin123  |
-| User  | user@cityfix.com     | user123   |
+| Admin | admin@cityops.com    | admin123  |
+| User  | user@cityops.com     | user123   |
 
 > Any other email/password combination will also log in as a regular user (prototype behaviour).
 

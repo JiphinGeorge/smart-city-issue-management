@@ -1,13 +1,13 @@
 {
   "users": [
     {
-      "email": "admin@cityfix.com",
+      "email": "admin@cityops.com",
       "password": "admin123",
       "name": "Admin User",
       "role": "admin"
     },
     {
-      "email": "user@cityfix.com",
+      "email": "user@cityops.com",
       "password": "user123",
       "name": "Regular User",
       "role": "user"
