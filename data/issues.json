@@ -1,10 +1,52 @@
 {
   "summary": {
-    "total": 1292,
-    "pending": 439,
+    "total": 1295,
+    "pending": 442,
     "resolved": 853
   },
   "issues": [
+    {
+      "id": "39625",
+      "timestamp": "2026-03-28T19:03:10.953Z",
+      "status": "Pending",
+      "title": "Broken post",
+      "category": "Utilities",
+      "priority": "Medium",
+      "description": "broken",
+      "location": {
+        "lat": 40.7026,
+        "lng": -74.0161
+      },
+      "image": "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "id": "22500",
+      "timestamp": "2026-03-28T18:59:31.640Z",
+      "status": "Pending",
+      "title": "ewr",
+      "category": "Road",
+      "priority": "Medium",
+      "description": "khblbbkl",
+      "location": {
+        "lat": 40.6997,
+        "lng": -73.9914
+      },
+      "image": "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "id": "30417",
+      "timestamp": "2026-03-28T18:59:01.755Z",
+      "status": "Pending",
+      "title": "ewr",
+      "category": "Road",
+      "priority": "Medium",
+      "description": "hnb",
+      "location": {
+        "lat": 40.7226,
+        "lng": -74.0239
+      },
+      "image": "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80"
+    },
     {
       "id": "95233",
       "timestamp": "2026-03-28T18:46:33.295Z",
