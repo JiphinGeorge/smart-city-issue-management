@@ -133,7 +133,7 @@ The app will be running at **http://localhost:3000**
 
 ## 🏆 Acknowledgements
 
-Built during the **Vibe Coding Event** at **TecXell 2026**, MGM Institute of Technology, Kochi.
+Built during the **Vibe Coding Event** at **TecXell 2026**, Muthoot  Institute of Technology, Kochi.
 A big thank you to the organizers and volunteers for hosting such an amazing event! 👏
 
 ---
