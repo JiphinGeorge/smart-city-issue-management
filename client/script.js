@@ -20,6 +20,7 @@ let searchQuery = '';
 async function fetchCityData() {
     try {
         const res = await fetch('/api/issues');
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         return await res.json();
     } catch(err) {
         console.error("Fetch failed:", err);
@@ -46,12 +47,19 @@ async function deleteIssueAPI(id) {
 }
 
 async function createIssueAPI(issueData) {
-    await fetch('/api/issues', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(issueData)
-    });
-    await initApp(); 
+    try {
+        const res = await fetch('/api/issues', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(issueData)
+        });
+        if (!res.ok) throw new Error(`Server returned ${res.status}`);
+        await initApp(); 
+    } catch (err) {
+        console.error("Failed to create issue:", err);
+        alert("Network error: Failed to submit issue. Please check if the server is running.");
+        throw err;
+    }
 }
 
 // --- NEW MODAL UI FUNCTION (WITH IMAGE UPLOAD) ---
@@ -170,8 +178,14 @@ function openNewIssueModal() {
             image: uploadedImageBase64 || 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80'
         };
 
-        await createIssueAPI(newIssue);
-        closeModal();
+        try {
+            await createIssueAPI(newIssue);
+            closeModal();
+            alert("Issue reported successfully!");
+        } catch (err) {
+            submitBtn.innerHTML = `<span class="material-symbols-outlined text-[18px]">send</span> Submit Report`;
+            submitBtn.disabled = false;
+        }
     });
 }
 
@@ -591,6 +605,9 @@ function enforceSecurityAndUI() {
     if (!isAuthPage) {
         if (role !== 'admin') {
             const adminLinks = document.querySelectorAll('a[href="/admin"], a[href="/analytics"]');
+            adminLinks.forEach(link => link.style.display = 'none');
+        }
+
         const nameSpans = document.querySelectorAll('.text-sm.font-bold.text-slate-900.dark\\\\:text-slate-100');
         nameSpans.forEach(span => {
             if(span.textContent === 'Alex Rivers' || span.textContent.includes('Alex')) span.textContent = name;
@@ -796,9 +813,16 @@ function enforceSecurityAndUI() {
             if (profileImage) {
                 const img = avatar.querySelector('img');
                 if (img) img.src = profileImage;
+                else avatar.style.backgroundImage = `url('${profileImage}')`;
             }
             avatar.addEventListener('click', (e) => toggleAvatarDropdown(e, avatar));
         });
+
+        const adminLogoutBtn = document.getElementById('btn-admin-header-logout');
+        if (adminLogoutBtn) adminLogoutBtn.addEventListener('click', showLogoutModal);
+
+        const analyticsLogoutBtn = document.getElementById('btn-analytics-header-logout');
+        if (analyticsLogoutBtn) analyticsLogoutBtn.addEventListener('click', showLogoutModal);
         
         const buttons = document.querySelectorAll('button');
         buttons.forEach(btn => {
@@ -835,17 +859,22 @@ function enforceSecurityAndUI() {
 async function initApp() {
     if (!enforceSecurityAndUI()) return;
 
-    const data = await fetchCityData();
-    if (data) {
-        globalIssues = data.issues ? data.issues : data;
-        
-        renderStats(); 
-        
-        const path = window.location.pathname;
-        if (path === '/' || path === '/index.html') renderDashboardIssues();
-        else if (path.includes('admin')) renderAdminTable();
-        else if (path.includes('details')) renderDetailsPage();
-        else if (path.includes('analytics')) renderAnalyticsPage();
+    try {
+        const data = await fetchCityData();
+        if (data) {
+            globalIssues = Array.isArray(data.issues) ? data.issues : 
+                           (Array.isArray(data) ? data : []);
+            
+            renderStats(); 
+            
+            const path = window.location.pathname;
+            if (path === '/' || path === '/index.html' || path.includes('index')) renderDashboardIssues();
+            else if (path.includes('admin')) renderAdminTable();
+            else if (path.includes('details')) renderDetailsPage();
+            else if (path.includes('analytics')) renderAnalyticsPage();
+        }
+    } catch (e) {
+        console.error("UI Rendering Error during initApp:", e);
     }
 }
 
