@@ -608,7 +608,7 @@ function enforceSecurityAndUI() {
             adminLinks.forEach(link => link.style.display = 'none');
         }
 
-        const nameSpans = document.querySelectorAll('.text-sm.font-bold.text-slate-900.dark\\\\:text-slate-100');
+        const nameSpans = document.querySelectorAll('.text-sm.font-bold.text-slate-900.dark\\:text-slate-100');
         nameSpans.forEach(span => {
             if(span.textContent === 'Alex Rivers' || span.textContent.includes('Alex')) span.textContent = name;
         });
