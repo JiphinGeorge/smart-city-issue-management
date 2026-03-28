@@ -591,50 +591,213 @@ function enforceSecurityAndUI() {
     if (!isAuthPage) {
         if (role !== 'admin') {
             const adminLinks = document.querySelectorAll('a[href="/admin"], a[href="/analytics"]');
-            adminLinks.forEach(link => link.style.display = 'none');
-        }
-
         const nameSpans = document.querySelectorAll('.text-sm.font-bold.text-slate-900.dark\\\\:text-slate-100');
         nameSpans.forEach(span => {
             if(span.textContent === 'Alex Rivers' || span.textContent.includes('Alex')) span.textContent = name;
         });
 
         const avatars = document.querySelectorAll('div[data-alt*="User avatar"], div[data-alt*="User profile"]');
-function showLogoutModal() {
-    if (document.getElementById('logout-modal')) return;
+        const profileImage = localStorage.getItem('cityops_profile_image');
 
-    const modalHtml = `
-    <div id="logout-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
-        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-800 p-6 font-display animate-fade-in-up">
-            <h3 class="font-bold text-xl text-slate-900 dark:text-white flex items-center gap-2 mb-2">
-                <span class="material-symbols-outlined text-rose-500">logout</span> Sign Out
-            </h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Are you sure you want to securely log out of your session?</p>
-            <div class="flex justify-end gap-3">
-                <button type="button" id="btn-cancel-logout" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Cancel</button>
-                <button type="button" id="btn-confirm-logout" class="px-6 py-2.5 rounded-xl text-sm font-bold bg-rose-500 text-white hover:bg-rose-600 transition-all shadow-lg shadow-rose-500/20">Sign Out</button>
-            </div>
-        </div>
-    </div>`;
+        function showLogoutModal() {
+            if (document.getElementById('logout-modal')) return;
 
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = modalHtml;
-    document.body.appendChild(wrapper.firstElementChild);
+            const modalHtml = `
+            <div id="logout-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+                <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-800 p-6 font-display animate-fade-in-up">
+                    <h3 class="font-bold text-xl text-slate-900 dark:text-white flex items-center gap-2 mb-2">
+                        <span class="material-symbols-outlined text-rose-500">logout</span> Sign Out
+                    </h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Are you sure you want to securely log out of your session?</p>
+                    <div class="flex justify-end gap-3">
+                        <button type="button" id="btn-cancel-logout" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Cancel</button>
+                        <button type="button" id="btn-confirm-logout" class="px-6 py-2.5 rounded-xl text-sm font-bold bg-rose-500 text-white hover:bg-rose-600 transition-all shadow-lg shadow-rose-500/20">Sign Out</button>
+                    </div>
+                </div>
+            </div>`;
 
-    const modalEl = document.getElementById('logout-modal');
-    
-    document.getElementById('btn-cancel-logout').addEventListener('click', () => modalEl.remove());
-    document.getElementById('btn-confirm-logout').addEventListener('click', () => {
-        localStorage.removeItem('cityops_role');
-        localStorage.removeItem('cityops_name');
-        window.location.href = '/login';
-    });
-}
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = modalHtml;
+            document.body.appendChild(wrapper.firstElementChild);
+
+            const modalEl = document.getElementById('logout-modal');
+            
+            document.getElementById('btn-cancel-logout').addEventListener('click', () => modalEl.remove());
+            document.getElementById('btn-confirm-logout').addEventListener('click', () => {
+                localStorage.removeItem('cityops_role');
+                localStorage.removeItem('cityops_name');
+                localStorage.removeItem('cityops_profile_image');
+                localStorage.removeItem('cityops_phone');
+                localStorage.removeItem('cityops_address');
+                window.location.href = '/login';
+            });
+        }
+
+        function showProfileModal() {
+            if (document.getElementById('profile-modal')) return;
+
+            const currentName = localStorage.getItem('cityops_name') || '';
+            const currentPhone = localStorage.getItem('cityops_phone') || '';
+            const currentAddress = localStorage.getItem('cityops_address') || '';
+
+            const modalHtml = `
+            <div id="profile-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity overflow-y-auto">
+                <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md border border-slate-200 dark:border-slate-800 overflow-hidden font-display animate-fade-in-up my-auto">
+                    <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">person</span> 
+                            Edit Profile
+                        </h3>
+                        <button type="button" id="close-profile-x" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </div>
+                    <form id="profile-form" class="p-6 flex flex-col gap-4">
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="relative size-24 rounded-full overflow-hidden border-4 border-slate-100 dark:border-slate-800 bg-slate-200 dark:bg-slate-700">
+                                <img id="profile-preview-img" src="${profileImage || 'https://lh3.googleusercontent.com/aida-public/AB6AXuB2HbBguHdX8uK2joF5Fdo6XvuzOZzbbCn9vjyJQs64d7rYm8ghM0JJQ98Avm_-7AAqtL3njZZ4i8LuLDcMXWLU2BNfxXpXOUYkh3iwSgvmuPzcFV6k05rUrm1gl1qkenL4Ri1ngDLmse_QMwnoHe6ReqWn1UYr3WewB_DF5wLIpXR3_QLwtqsp9_FHQNQPP9yn91SEgSss4y7mYREyU6Qza6b7vy8k6sDL5hRb5ZWe4UliNic_FRmYfcr0IFDYlbZp5KJQtLpWGYa3'}" class="w-full h-full object-cover">
+                                <label class="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white opacity-0 hover:opacity-100 transition-opacity cursor-pointer">
+                                    <span class="material-symbols-outlined text-xl">photo_camera</span>
+                                    <span class="text-[10px] font-bold mt-1">Change</span>
+                                    <input type="file" id="profile-img-upload" accept="image/*" class="hidden">
+                                </label>
+                            </div>
+                            <span class="text-xs text-slate-500 dark:text-slate-400">Allowed formats (.jpg .png)</span>
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Full Name</label>
+                            <input type="text" id="profile-name" value="${currentName}" class="form-input w-full rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:border-primary focus:ring-primary dark:text-white">
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Phone Number</label>
+                            <input type="text" id="profile-phone" value="${currentPhone}" placeholder="+1 (555) 000-0000" class="form-input w-full rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:border-primary focus:ring-primary dark:text-white">
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Address Details</label>
+                            <textarea id="profile-address" rows="2" class="form-textarea w-full rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:border-primary focus:ring-primary dark:text-white" placeholder="Street, City, Zip Code...">${currentAddress}</textarea>
+                        </div>
+                        <div class="flex justify-end gap-3 mt-2 pt-4 border-t border-slate-100 dark:border-slate-800">
+                            <button type="button" id="close-profile-btn" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Cancel</button>
+                            <button type="submit" class="px-6 py-2.5 rounded-xl text-sm font-bold bg-primary text-white hover:brightness-110 transition-all shadow-lg shadow-primary/20 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[18px]">save</span> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>`;
+
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = modalHtml;
+            document.body.appendChild(wrapper.firstElementChild);
+
+            const modalEl = document.getElementById('profile-modal');
+            const closeModal = () => modalEl.remove();
+            
+            document.getElementById('close-profile-x').addEventListener('click', closeModal);
+            document.getElementById('close-profile-btn').addEventListener('click', closeModal);
+            modalEl.addEventListener('click', (e) => { if (e.target === modalEl) closeModal(); });
+
+            const fileInput = document.getElementById('profile-img-upload');
+            const previewImage = document.getElementById('profile-preview-img');
+            let uploadedImageBase64 = profileImage;
+
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        uploadedImageBase64 = event.target.result;
+                        previewImage.src = uploadedImageBase64;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            document.getElementById('profile-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const btn = e.target.querySelector('button[type="submit"]');
+                btn.innerHTML = `<span class="material-symbols-outlined animate-spin text-[18px]">sync</span> Saving...`;
+                
+                localStorage.setItem('cityops_name', document.getElementById('profile-name').value);
+                localStorage.setItem('cityops_phone', document.getElementById('profile-phone').value);
+                localStorage.setItem('cityops_address', document.getElementById('profile-address').value);
+                
+                if (uploadedImageBase64) {
+                    localStorage.setItem('cityops_profile_image', uploadedImageBase64);
+                }
+                
+                setTimeout(() => {
+                    closeModal();
+                    window.location.reload();
+                }, 400);
+            });
+        }
+
+        function toggleAvatarDropdown(e, avatar) {
+            e.stopPropagation();
+            let existingDropdown = document.getElementById('avatar-dropdown');
+            if (existingDropdown) {
+                existingDropdown.remove();
+                return;
+            }
+
+            const rect = avatar.getBoundingClientRect();
+            const currentName = localStorage.getItem('cityops_name') || 'Citizen';
+            const roleString = localStorage.getItem('cityops_role') === 'admin' ? 'Administrator' : 'User';
+
+            const dropdownHtml = `
+            <div id="avatar-dropdown" class="absolute z-50 mt-2 w-56 rounded-xl bg-white dark:bg-slate-800 shadow-xl border border-slate-200 dark:border-slate-700 py-2 animate-fade-in-up" 
+                 style="top: ${rect.bottom + window.scrollY}px; right: ${window.innerWidth - rect.right}px;">
+                <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-700 mb-1 flex items-center gap-3">
+                    <div class="size-10 rounded-full border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0">
+                        <img src="${profileImage || 'https://lh3.googleusercontent.com/aida-public/AB6AXuB2HbBguHdX8uK2joF5Fdo6XvuzOZzbbCn9vjyJQs64d7rYm8ghM0JJQ98Avm_-7AAqtL3njZZ4i8LuLDcMXWLU2BNfxXpXOUYkh3iwSgvmuPzcFV6k05rUrm1gl1qkenL4Ri1ngDLmse_QMwnoHe6ReqWn1UYr3WewB_DF5wLIpXR3_QLwtqsp9_FHQNQPP9yn91SEgSss4y7mYREyU6Qza6b7vy8k6sDL5hRb5ZWe4UliNic_FRmYfcr0IFDYlbZp5KJQtLpWGYa3'}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-sm font-bold text-slate-900 dark:text-white truncate">${currentName}</p>
+                        <p class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">${roleString}</p>
+                    </div>
+                </div>
+                <button id="btn-dropdown-profile" class="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-2 transition-colors">
+                    <span class="material-symbols-outlined text-[18px] text-primary">manage_accounts</span> Edit Profile Options
+                </button>
+                <button id="btn-dropdown-logout" class="w-full text-left px-4 py-2.5 text-sm font-medium text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/10 flex items-center gap-2 transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">logout</span> Sign Out
+                </button>
+            </div>`;
+
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = dropdownHtml;
+            document.body.appendChild(wrapper.firstElementChild);
+
+            document.getElementById('btn-dropdown-profile').addEventListener('click', () => {
+                document.getElementById('avatar-dropdown').remove();
+                showProfileModal();
+            });
+            
+            document.getElementById('btn-dropdown-logout').addEventListener('click', () => {
+                document.getElementById('avatar-dropdown').remove();
+                showLogoutModal();
+            });
+
+            const closeDropdown = (evt) => {
+                const dropdown = document.getElementById('avatar-dropdown');
+                if (dropdown && !dropdown.contains(evt.target) && evt.target !== avatar && !avatar.contains(evt.target)) {
+                    dropdown.remove();
+                    document.removeEventListener('click', closeDropdown);
+                }
+            };
+            document.addEventListener('click', closeDropdown);
+        }
 
         avatars.forEach(avatar => {
             avatar.style.cursor = 'pointer';
-            avatar.title = `Logout (${name})`;
-            avatar.addEventListener('click', showLogoutModal);
+            avatar.title = `User Menu (${name})`;
+            if (profileImage) {
+                const img = avatar.querySelector('img');
+                if (img) img.src = profileImage;
+            }
+            avatar.addEventListener('click', (e) => toggleAvatarDropdown(e, avatar));
         });
         
         const buttons = document.querySelectorAll('button');
