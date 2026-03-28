@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "email": "admin@cityfix.com",
+      "password": "admin123",
+      "name": "Admin User",
+      "role": "admin"
+    },
+    {
+      "email": "user@cityfix.com",
+      "password": "user123",
+      "name": "Regular User",
+      "role": "user"
+    }
+  ]
+}
