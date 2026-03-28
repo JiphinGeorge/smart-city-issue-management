@@ -1,10 +1,38 @@
 {
   "summary": {
-    "total": 1295,
-    "pending": 442,
+    "total": 1297,
+    "pending": 444,
     "resolved": 853
   },
   "issues": [
+    {
+      "id": "31511",
+      "timestamp": "2026-03-28T19:20:05.678Z",
+      "status": "Pending",
+      "title": "Test Issue - Water Leak",
+      "category": "Utilities",
+      "priority": "Medium",
+      "description": "There is a water leak at the library entrance. This is a dummy report for testing.",
+      "location": {
+        "lat": 40.6962,
+        "lng": -74.0285
+      },
+      "image": "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "id": "78564",
+      "timestamp": "2026-03-28T19:19:50.176Z",
+      "status": "Pending",
+      "title": "Test Issue - Water Leak",
+      "category": "Road",
+      "priority": "Medium",
+      "description": "There is a water leak at the library entrance. This is a dummy report for testing.",
+      "location": {
+        "lat": 40.7151,
+        "lng": -74.0168
+      },
+      "image": "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80"
+    },
     {
       "id": "39625",
       "timestamp": "2026-03-28T19:03:10.953Z",
