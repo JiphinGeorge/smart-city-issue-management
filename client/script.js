@@ -600,16 +600,41 @@ function enforceSecurityAndUI() {
         });
 
         const avatars = document.querySelectorAll('div[data-alt*="User avatar"], div[data-alt*="User profile"]');
+function showLogoutModal() {
+    if (document.getElementById('logout-modal')) return;
+
+    const modalHtml = `
+    <div id="logout-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-800 p-6 font-display animate-fade-in-up">
+            <h3 class="font-bold text-xl text-slate-900 dark:text-white flex items-center gap-2 mb-2">
+                <span class="material-symbols-outlined text-rose-500">logout</span> Sign Out
+            </h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Are you sure you want to securely log out of your session?</p>
+            <div class="flex justify-end gap-3">
+                <button type="button" id="btn-cancel-logout" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Cancel</button>
+                <button type="button" id="btn-confirm-logout" class="px-6 py-2.5 rounded-xl text-sm font-bold bg-rose-500 text-white hover:bg-rose-600 transition-all shadow-lg shadow-rose-500/20">Sign Out</button>
+            </div>
+        </div>
+    </div>`;
+
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = modalHtml;
+    document.body.appendChild(wrapper.firstElementChild);
+
+    const modalEl = document.getElementById('logout-modal');
+    
+    document.getElementById('btn-cancel-logout').addEventListener('click', () => modalEl.remove());
+    document.getElementById('btn-confirm-logout').addEventListener('click', () => {
+        localStorage.removeItem('cityops_role');
+        localStorage.removeItem('cityops_name');
+        window.location.href = '/login';
+    });
+}
+
         avatars.forEach(avatar => {
             avatar.style.cursor = 'pointer';
             avatar.title = `Logout (${name})`;
-            avatar.addEventListener('click', () => {
-                if(confirm('Are you sure you want to log out?')) {
-                    localStorage.removeItem('cityops_role');
-                    localStorage.removeItem('cityops_name');
-                    window.location.href = '/login';
-                }
-            });
+            avatar.addEventListener('click', showLogoutModal);
         });
         
         const buttons = document.querySelectorAll('button');

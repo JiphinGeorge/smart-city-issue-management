@@ -1,10 +1,24 @@
 {
   "summary": {
-    "total": 1291,
-    "pending": 438,
+    "total": 1292,
+    "pending": 439,
     "resolved": 853
   },
   "issues": [
+    {
+      "id": "95233",
+      "timestamp": "2026-03-28T18:46:33.295Z",
+      "status": "Pending",
+      "title": "ewr",
+      "category": "Road",
+      "priority": "Medium",
+      "description": "wer",
+      "location": {
+        "lat": 40.726,
+        "lng": -73.997
+      },
+      "image": "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80"
+    },
     {
       "id": "24068",
       "timestamp": "2026-03-18T10:02:17.366Z",
