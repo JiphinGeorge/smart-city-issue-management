@@ -11,6 +11,13 @@
       "password": "user123",
       "name": "Regular User",
       "role": "user"
+    },
+    {
+      "email": "e2e@cityops.com",
+      "password": "password",
+      "name": "Browser Agent",
+      "ward": "Downtown",
+      "role": "user"
     }
   ]
 }

@@ -68,7 +68,7 @@ app.post('/api/register', (req, res) => {
         data.users.push(newUser);
         writeUsers(data);
         
-        return res.json({ success: true, role: 'user', redirectUrl: '/' });
+        return res.json({ success: true, role: 'user', name: name, redirectUrl: '/' });
     } catch(err) {
         return res.status(500).json({ success: false, error: 'Failed to create account' });
     }

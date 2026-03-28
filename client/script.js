@@ -415,6 +415,7 @@ function setupInteractivity() {
                 if (res.ok && data.success) {
                     // Save role in local storage (optional, useful for hiding UI elements later)
                     localStorage.setItem('cityops_role', data.role);
+                    localStorage.setItem('cityops_name', data.name);
                     
                     // Redirect the user to the URL the server told us to use!
                     window.location.href = data.redirectUrl;
@@ -461,6 +462,7 @@ function setupInteractivity() {
 
                 if (res.ok && data.success) {
                     localStorage.setItem('cityops_role', data.role);
+                    localStorage.setItem('cityops_name', data.name);
                     window.location.href = data.redirectUrl;
                 } else {
                     errorBox.textContent = data.error || "Registration failed.";
@@ -567,8 +569,84 @@ function setupInteractivity() {
     }
 }
 
+function enforceSecurityAndUI() {
+    const role = localStorage.getItem('cityops_role');
+    const name = localStorage.getItem('cityops_name') || 'Citizen';
+    const path = window.location.pathname;
+    const isAuthPage = path.includes('login') || path.includes('register');
+
+    if (!role && !isAuthPage) {
+        window.location.href = '/login';
+        return false;
+    }
+    if (role !== 'admin' && (path.includes('admin') || path.includes('analytics'))) {
+        window.location.href = '/';
+        return false;
+    }
+    if (role && isAuthPage) {
+        window.location.href = role === 'admin' ? '/admin' : '/';
+        return false;
+    }
+
+    if (!isAuthPage) {
+        if (role !== 'admin') {
+            const adminLinks = document.querySelectorAll('a[href="/admin"], a[href="/analytics"]');
+            adminLinks.forEach(link => link.style.display = 'none');
+        }
+
+        const nameSpans = document.querySelectorAll('.text-sm.font-bold.text-slate-900.dark\\\\:text-slate-100');
+        nameSpans.forEach(span => {
+            if(span.textContent === 'Alex Rivers' || span.textContent.includes('Alex')) span.textContent = name;
+        });
+
+        const avatars = document.querySelectorAll('div[data-alt*="User avatar"], div[data-alt*="User profile"]');
+        avatars.forEach(avatar => {
+            avatar.style.cursor = 'pointer';
+            avatar.title = `Logout (${name})`;
+            avatar.addEventListener('click', () => {
+                if(confirm('Are you sure you want to log out?')) {
+                    localStorage.removeItem('cityops_role');
+                    localStorage.removeItem('cityops_name');
+                    window.location.href = '/login';
+                }
+            });
+        });
+        
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(btn => {
+            if (btn.textContent.includes('Export Data') || btn.textContent.includes('Export CSV')) {
+                btn.addEventListener('click', () => {
+                    if(!globalIssues.length) return alert("No data to export.");
+                    const headers = ['ID', 'Title', 'Category', 'Priority', 'Status', 'Date'];
+                    const csvLines = [headers.join(',')];
+                    globalIssues.forEach(i => {
+                        csvLines.push(`${i.id},"${i.title.replace(/"/g, '""')}",${i.category},${i.priority},${i.status},${new Date(i.timestamp).toLocaleDateString()}`);
+                    });
+                    const blob = new Blob([csvLines.join('\\n')], { type: 'text/csv' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a'); a.href = url; a.download = 'cityops_export.csv';
+                    a.click(); URL.revokeObjectURL(url);
+                });
+            }
+            if(btn.textContent.includes('Open Full Map View')) {
+                btn.addEventListener('click', () => alert("Map View is currently loading background tiles. (Prototype feature)"));
+            }
+        });
+        
+        document.querySelectorAll('a[href="#"]').forEach(a => a.addEventListener('click', e => {
+            if(e.currentTarget.textContent.includes('Forgot')) {
+                alert("Please contact your CityOps administrator to reset your password.");
+            }
+            e.preventDefault();
+        }));
+    }
+    return true;
+}
+
 // --- INITIALIZATION ---
 async function initApp() {
+    if (!enforceSecurityAndUI()) return;
+
     const data = await fetchCityData();
     if (data) {
         globalIssues = data.issues ? data.issues : data;
